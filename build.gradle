@@ -1,0 +1,95 @@
+group 'com.huifenqi.jedi'
+version '1.7.5-SNAPSHOT'
+
+
+buildscript {
+    ext {
+        springBootVersion = '1.5.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.4.17"
+    }
+}
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.artifactory"
+
+// JVM 版本号
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+// java编译的时候缺省状态下会因为中文字符而失败
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+    jcenter() {
+        url "http://123.57.37.231:18081/artifactory/jedi-repo/"
+    }
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter')
+    compile('org.springframework.boot:spring-boot-starter-aop')
+    //compile('org.springframework.boot:spring-boot-starter-jdbc')
+    compile("com.alibaba:dubbo:2.8.4") {
+        //exclude group: 'org.slf4j', module: 'slf4j-api'
+        //exclude group: 'ch.qos.logback', module: 'logback-classic'
+        exclude group: 'org.slf4j'
+        exclude group: 'ch.qos.logback'
+        exclude group: 'log4j'
+    }
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+artifactory {
+    //contextUrl = 'http://47.93.114.117:18081/artifactory'
+    contextUrl = 'http://123.57.37.231:18081/artifactory'
+    publish {
+        repository {
+            repoKey = "jedi-repo"
+            username = "jedi"
+            password = "jedi@jedi"
+            maven = true
+        }
+        defaults {
+            publishBuildInfo = true   //Publish build-info to Artifactory (true by default)
+            publishArtifacts = true   //Publish artifacts to Artifactory (true by default)
+            publishPom = true   //Publish generated POM files to Artifactory (true by default).
+            publishIvy = true   //Publish generated Ivy descriptor files to Artifactory (true by default).
+
+            publications('mavenJava')
+        }
+    }
+}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            //artifact javadocJar
+            //version = version + ".RELEASE"
+        }
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}

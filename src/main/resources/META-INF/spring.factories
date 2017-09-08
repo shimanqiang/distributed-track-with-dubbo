@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.huifenqi.jedi.track.TrackAutoConfiguration
+
+# Application Context Initializers
+org.springframework.context.ApplicationContextInitializer=\
+com.huifenqi.jedi.track.TrackApplicationContextInitializer
