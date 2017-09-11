@@ -6,17 +6,30 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.UUID;
 
+/**
+ * @author smq
+ */
 @Aspect
 @Configuration
 //@Profile({"dev", "test", "pre"})
+@ConditionalOnProperty(
+        value = {"jedi.track.enabled"},
+        matchIfMissing = false
+)
 public class TrackAspect {
     private Logger logger = Logger.getLogger(getClass());
 
     private static final ThreadLocal<TrackBean> LOCAL = new ThreadLocal<>();
+
+
+    @Autowired
+    TrackStorage trackStorage;
 
 
     @Pointcut("(@annotation(com.huifenqi.jedi.track.anno.Track))  || (execution(public * com.huifenqi..facade..*Impl.*(..))) || (execution(public * com.huifenqi..controller..*.*(..)))")
@@ -30,10 +43,18 @@ public class TrackAspect {
         //TODO 策略处理
         try {
             try {
-                String trackId = RpcContext.getContext().getAttachment("trackId");
+                RpcContext rpcContext = RpcContext.getContext();
+                String trackId = null;
+                if (rpcContext != null) {
+                    trackId = rpcContext.getAttachment("trackId");
+                } else {
+                    logger.warn("Dubbo RPC is not work");
+                }
                 if (null == trackId || trackId.length() == 0) {
                     trackId = UUID.randomUUID().toString();
-                    RpcContext.getContext().setAttachment("trackId", trackId);
+                }
+                if (rpcContext != null) {
+                    rpcContext.setAttachment("trackId", trackId);
                 }
                 TrackBean bean = new TrackBean();
                 bean.setStartTime(System.currentTimeMillis());
@@ -61,14 +82,11 @@ public class TrackAspect {
                 TrackBean bean = LOCAL.get();
                 bean.setEndTime(System.currentTimeMillis());
 
-
                 if (LOCAL.get() != null) {
-                    System.out.println(LOCAL.get().toString());
+                    trackStorage.add(LOCAL.get().buildJson());
                 } else {
                     System.out.println("----------------------LOCAL对象为空------------------------------");
                 }
-
-                //TODO save or  mq or redis
             } catch (Exception e) {
                 logger.warn("===============忽略3============", e);
             } finally {

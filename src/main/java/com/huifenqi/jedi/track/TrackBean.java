@@ -1,5 +1,7 @@
 package com.huifenqi.jedi.track;
 
+import com.huifenqi.jedi.track.utils.GsonUtil;
+
 /**
  * Created by t3tiger on 2017/9/7.
  */
@@ -9,13 +11,27 @@ public class TrackBean {
      */
     private String environment;
     /**
-     *追踪ID
+     * 追踪ID
      */
     private String trackId;
     /**
      * 模块
      */
     private String module;
+
+    /**
+     * 类名
+     */
+    private String clazz;
+    /**
+     * 方法名
+     */
+    private String method;
+
+    /**
+     * 参数
+     */
+    private String args;
 
     /**
      * 开始时间
@@ -68,7 +84,9 @@ public class TrackBean {
 
     public void setEndTime(Long endTime) {
         this.endTime = endTime;
-        this.executeTime = this.endTime - this.startTime;
+        if (this.startTime != null && this.startTime != 0) {
+            this.executeTime = this.endTime - this.startTime;
+        }
     }
 
     public Long getExecuteTime() {
@@ -97,14 +115,20 @@ public class TrackBean {
 
     @Override
     public String toString() {
-        return "{" +
-                "environment:'" + environment + '\'' +
-                ", trackId:'" + trackId + '\'' +
-                ", module:'" + module + '\'' +
-                ", startTime:" + startTime +
-                ", endTime:" + endTime +
-                ", executeTime:" + executeTime +
-                ", throwable:" + throwable +
+        return "TrackBean{" +
+                "environment='" + environment + '\'' +
+                ", trackId='" + trackId + '\'' +
+                ", module='" + module + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", executeTime=" + executeTime +
+                ", throwable=" + throwable +
                 '}';
+    }
+
+    public String buildJson() {
+        this.executeTime = this.endTime - this.startTime;
+
+        return GsonUtil.buildGson().toJson(this);
     }
 }

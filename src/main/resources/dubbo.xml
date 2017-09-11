@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        ">
+
+    <!-- 提供方应用信息，用于计算依赖关系 -->
+    <dubbo:application name="jedi-track"/>
+
+    <!-- 使用zookeeper注册中心暴露服务地址 -->
+    <!--<dubbo:registry protocol="zookeeper"
+                    check="false"
+                    address="47.93.114.117:15001,47.93.114.117:15002,47.93.114.117:15003"/>-->
+    <dubbo:registry address="redis://47.93.114.117:6379"/>
+
+    <dubbo:protocol name="dubbo"
+                    port="12345"
+                    serialization="kryo2"/>
+</beans>
