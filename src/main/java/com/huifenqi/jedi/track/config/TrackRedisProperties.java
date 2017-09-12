@@ -1,8 +1,7 @@
-package com.huifenqi.jedi.track.producer.redis;
+package com.huifenqi.jedi.track.config;
 
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import com.huifenqi.jedi.track.producer.redis.RedisTrackProducer;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**

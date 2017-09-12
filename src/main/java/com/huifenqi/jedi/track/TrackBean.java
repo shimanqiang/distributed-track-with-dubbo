@@ -29,11 +29,6 @@ public class TrackBean {
     private String method;
 
     /**
-     * 参数
-     */
-    private String args;
-
-    /**
      * 开始时间
      */
     private Long startTime;
@@ -113,17 +108,20 @@ public class TrackBean {
         this.trackId = trackId;
     }
 
-    @Override
-    public String toString() {
-        return "TrackBean{" +
-                "environment='" + environment + '\'' +
-                ", trackId='" + trackId + '\'' +
-                ", module='" + module + '\'' +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", executeTime=" + executeTime +
-                ", throwable=" + throwable +
-                '}';
+    public String getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 
     public String buildJson() {

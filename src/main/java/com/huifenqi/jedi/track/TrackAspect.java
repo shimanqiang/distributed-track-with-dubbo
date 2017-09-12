@@ -3,6 +3,7 @@ package com.huifenqi.jedi.track;
 import com.alibaba.dubbo.rpc.RpcContext;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -61,6 +62,11 @@ public class TrackAspect {
                 bean.setTrackId(trackId);
                 bean.setEnvironment(TrackApplicationContextHolder.getEnv());
                 bean.setModule(TrackApplicationContextHolder.getModule());
+
+                Signature signature = pjp.getSignature();
+                bean.setClazz(signature.getDeclaringTypeName());
+                bean.setMethod(signature.getName());
+
                 LOCAL.set(bean);
             } catch (Exception e) {
                 logger.warn("===============忽略1============", e);

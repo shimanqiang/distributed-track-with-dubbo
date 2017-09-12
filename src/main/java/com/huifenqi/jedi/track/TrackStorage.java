@@ -1,12 +1,14 @@
 package com.huifenqi.jedi.track;
 
+import org.springframework.beans.factory.DisposableBean;
+
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by t3tiger on 2017/9/8.
  */
-public class TrackStorage {
+public class TrackStorage implements DisposableBean {
     private LinkedBlockingQueue<String> storage;
 
     public TrackStorage() {
@@ -14,19 +16,6 @@ public class TrackStorage {
             storage = new LinkedBlockingQueue<>();
         }
     }
-
-//    private static volatile TrackStorage instance = null;
-//
-//    public static TrackStorage getInstance() {
-//        if (instance == null) {
-//            synchronized (instance) {
-//                if (instance == null) {
-//                    instance = new TrackStorage();
-//                }
-//            }
-//        }
-//        return instance;
-//    }
 
     public boolean add(String content) {
         if (storage == null) {
@@ -49,11 +38,13 @@ public class TrackStorage {
         return storage.poll();
     }
 
-    public void dispose() {
+    @Override
+    public void destroy() throws Exception {
         if (storage != null) {
             //storage.offer("1");//防止挂起，死锁
             storage.clear();
             storage = null;
         }
     }
+
 }

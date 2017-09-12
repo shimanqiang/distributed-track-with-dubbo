@@ -1,12 +1,21 @@
 package com.huifenqi.jedi.track.producer;
 
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+
 /**
  * Created by t3tiger on 2017/9/11.
  */
-public class TrackProducerManager {
+public class TrackProducerManager implements InitializingBean, DisposableBean {
     private static volatile boolean isRun;
 
-    public static void start() {
+    @Override
+    public void destroy() throws Exception {
+        isRun = false;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
         if (isRun) {
             return;
         }
@@ -17,9 +26,5 @@ public class TrackProducerManager {
                 producer.doWork();
             }
         }).start();
-    }
-
-    public static void stop() {
-        isRun = false;
     }
 }

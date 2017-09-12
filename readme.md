@@ -1,12 +1,8 @@
-server:
-  port: 8080
-
+```yaml
 spring:
   application:
-    #必须配置
+    #必须配置-对应的模块
     name: jedi-track
-  profiles:
-    active: dev
 jedi:
   track:
     #开启追踪
@@ -22,4 +18,4 @@ jedi:
     presistent:
       className: com.huifenqi.jedi.test.TestPrintPresistent
 
-
+```
