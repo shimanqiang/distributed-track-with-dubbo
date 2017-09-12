@@ -1,5 +1,5 @@
 group 'com.huifenqi.jedi'
-version '1.7.13-SNAPSHOT'
+version '1.7.14-SNAPSHOT'
 
 
 buildscript {
