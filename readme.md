@@ -22,3 +22,11 @@ jedi:
 
 * 说明：持久化配置在monitor模块配置即可，需要具体的实现接口TrackPresistent。
 * 对应monitor模块在做持久化的时候，需要通过@EnableTrack注解开启消费功能
+
+
+```
+@Pointcut("(@annotation(com.huifenqi.jedi.track.anno.Track))  || (execution(public * com.huifenqi..facade..*Impl.*(..))) || (execution(public * com.huifenqi..controller..*.*(..)))")
+
+以上是配置默认的切面，如果你的模块不包含在内。需要在对应的方法上
+添加@Track注解
+```
