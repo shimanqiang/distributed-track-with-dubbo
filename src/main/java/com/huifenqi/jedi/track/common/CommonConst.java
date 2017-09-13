@@ -5,8 +5,11 @@ import java.time.LocalDate;
 /**
  * Created by t3tiger on 2017/9/12.
  */
-public interface CommonConst {
-    interface RedisKeys {
-        String trackKey = "jedi:track:key:" + LocalDate.now().toString();
+public class CommonConst {
+    public static class RedisKeys {
+        public static String trackKey;
+        static {
+            trackKey = "jedi:track:key:" + LocalDate.now().toString();
+        }
     }
 }

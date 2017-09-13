@@ -1,4 +1,4 @@
-package com.huifenqi.jedi.track.consumer;
+package com.huifenqi.jedi.track.presistent;
 
 /**
  * Created by t3tiger on 2017/9/12.

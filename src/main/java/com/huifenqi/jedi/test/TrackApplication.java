@@ -15,19 +15,20 @@ import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebAppl
 @EnableTrack
 public class TrackApplication {
     public static void main(String[] args) throws InterruptedException {
+        //System.setProperty("jedi.track.presistent.path", "/data/track2");
         SpringApplication.run(TrackApplication.class, args);
 
         TrackStorage bean = SpringBeanUtils.getBean(TrackStorage.class);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             bean.add("hello track" + i);
-            Thread.sleep(500);
+            //Thread.sleep(500);
         }
 
         //System.out.println(bean.add("hello track2"));
 
 
-        Thread.sleep( 5 * 1000);
+        Thread.sleep(30 * 1000);
         AnnotationConfigEmbeddedWebApplicationContext ctx = (AnnotationConfigEmbeddedWebApplicationContext) TrackApplicationContextHolder.ctx;
         System.out.println(TrackApplicationContextHolder.ctx.getClass().getName());
         ctx.close();

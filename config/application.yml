@@ -20,6 +20,10 @@ jedi:
       database: 3
     #持久化配置
     presistent:
-      className: com.huifenqi.jedi.test.TestPrintPresistent
+      #文件持久化方式:com.huifenqi.jedi.track.presistent.FilePresistent
+      #控制台打印 : com.huifenqi.jedi.track.presistent.PrintConsolePresistent
+      className: com.huifenqi.jedi.track.presistent.PrintConsolePresistent
+      #持久化为文件配置，默认/data/track
+      path: /data/track
 
 

@@ -21,10 +21,14 @@ public class TrackProducerManager implements InitializingBean, DisposableBean {
         }
         isRun = true;
         TrackProducer producer = TrackProducerFactory.create();
+
+        //启动redis生产者
         new Thread(() -> {
             while (isRun) {
                 producer.doWork();
             }
+            producer.stop();
         }).start();
+
     }
 }

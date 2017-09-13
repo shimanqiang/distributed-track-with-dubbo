@@ -5,4 +5,8 @@ package com.huifenqi.jedi.track.producer;
  */
 public interface TrackProducer{
     void doWork();
+
+    default void stop() {
+
+    }
 }

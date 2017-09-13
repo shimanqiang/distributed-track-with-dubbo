@@ -5,7 +5,7 @@ import com.huifenqi.jedi.track.config.TrackPresistentConfig;
 import com.huifenqi.jedi.track.config.TrackRedisProperties;
 import com.huifenqi.jedi.track.consumer.TrackConsumer;
 import com.huifenqi.jedi.track.consumer.TrackConsumerManager;
-import com.huifenqi.jedi.track.consumer.TrackPresistent;
+import com.huifenqi.jedi.track.presistent.TrackPresistent;
 import com.huifenqi.jedi.track.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
@@ -51,7 +51,7 @@ public class RedisTrackConsumer implements TrackConsumer {
                 Class<?> cls = Class.forName(trackPresistentConfig.getClassName());
                 trackPresistent = (TrackPresistent) cls.newInstance();
             } catch (Exception e) {
-                System.out.println("需要实现com.huifenqi.jedi.track.consumer.TrackPresistent接口，并配置jedi.track.presistent.className属性");
+                System.err.println("需要实现com.huifenqi.jedi.track.consumer.TrackPresistent接口，并配置jedi.track.presistent.className属性");
                 return;
             }
         }
