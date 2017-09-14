@@ -14,17 +14,18 @@ jedi:
       port: 6379
       password: test001
       database: 3
-    #持久化配置
+    #持久化配置(仅monitor配置即可)
     presistent:
-      #文件持久化方式:com.huifenqi.jedi.track.presistent.FilePresistent
+      #写入文件:com.huifenqi.jedi.track.presistent.FilePresistent
       #控制台打印 : com.huifenqi.jedi.track.presistent.PrintConsolePresistent
+      #其他持久化方式实现接口：com.huifenqi.jedi.track.presistent.TrackPresistent
       className: com.huifenqi.jedi.track.presistent.FilePresistent
-      #持久化为文件配置，默认/data/track
+      #持久化方式为文件时，需要配置，不配置默认/data/track
       path: /data/track
 
 ```
 
-* 说明：持久化配置在monitor模块配置即可，需要具体的实现接口TrackPresistent。
+* 说明：持久化配置在monitor模块配置即可，需要具体的实现接口TrackPresistent，可扩展具体的持久化方式
 * 对应monitor模块在做持久化的时候，需要通过@EnableTrack注解开启消费功能
 
 
