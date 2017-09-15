@@ -1,5 +1,5 @@
 group 'com.huifenqi.jedi'
-version '1.0-SNAPSHOT'
+version '1.5-SNAPSHOT'
 
 
 buildscript {
@@ -63,7 +63,7 @@ artifactory {
         repository {
             repoKey = "jedi-repo"
             username = "jedi"
-            password = "海鲜歌:jediATjedi"
+            password = "jedi@jedi"
             maven = true
         }
         defaults {

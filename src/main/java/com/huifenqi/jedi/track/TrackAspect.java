@@ -26,6 +26,7 @@ import java.util.UUID;
 public class TrackAspect {
     private Logger logger = Logger.getLogger(getClass());
 
+    private static final ThreadLocal<String> TRACK_ID_LOCAL = new InheritableThreadLocal<>();
     private static final ThreadLocal<TrackBean> LOCAL = new ThreadLocal<>();
 
 
@@ -33,7 +34,7 @@ public class TrackAspect {
     TrackStorage trackStorage;
 
 
-    @Pointcut("(@annotation(com.huifenqi.jedi.track.anno.Track))  || (execution(public * com.huifenqi..facade..*Impl.*(..))) || (execution(public * com.huifenqi..controller..*.*(..)))  || (execution(public * com.huifenqi.jedi.router.service.*.*(..)))")
+    @Pointcut("(@annotation(com.huifenqi.jedi.track.anno.Track))  || (execution(public * com.huifenqi..facade..*Impl.*(..))) || (execution(public * com.huifenqi..controller..*.*(..)))  || (execution(public * com.huifenqi.jedi.router.service..*.*(..)))")
     public void track() {
 
     }
@@ -42,39 +43,44 @@ public class TrackAspect {
     @Around("track()")
     public Object doTrack(ProceedingJoinPoint pjp) throws Throwable {
         Object retObject = null;
-        boolean isPortal = false;//
+
         //TODO 策略处理
         try {
             String trackId = null;
             //Object[] args = pjp.getArgs();
             try {
 
-                //从线程变量中获取
-                TrackBean trackBean = LOCAL.get();
-                if (trackBean != null) {
-                    trackId = trackBean.getTrackId();
-                }
-
                 //从dubbo上下文中获取
                 RpcContext rpcContext = RpcContext.getContext();
-                if (null == trackId || trackId.length() == 0) {
-                    if (rpcContext != null) {
-                        trackId = rpcContext.getAttachment("trackId");
-                    } else {
-                        logger.warn("Dubbo RPC is not work");
-                    }
+                if (rpcContext != null) {
+                    trackId = rpcContext.getAttachment("trackId");
+                } else {
+                    logger.debug("Dubbo RPC Context is not work");
                 }
+
+                System.out.println("rpc:" + trackId);
+
+                //从线程变量副本中获取
+                if (null == trackId || trackId.length() == 0) {
+                    trackId = TRACK_ID_LOCAL.get();
+                }
+
+                System.out.println("thread:" + trackId);
 
                 //生成trackId
                 if (null == trackId || trackId.length() == 0) {
                     trackId = UUID.randomUUID().toString();
-                    isPortal = true;
                 }
+
+                System.out.println("uuid:" + trackId);
 
                 //dubbo上下文保存trackId
                 if (rpcContext != null) {
                     rpcContext.setAttachment("trackId", trackId);
                 }
+
+                //线程间保存trackId
+                TRACK_ID_LOCAL.set(trackId);
 
                 //构造持久化数据
                 TrackBean bean = new TrackBean();
@@ -93,6 +99,8 @@ public class TrackAspect {
                 logger.warn("===============忽略1============", e);
             } finally {
                 retObject = pjp.proceed();
+
+                System.out.println("end:" + trackId);
             }
 
         } catch (Throwable t) {
@@ -111,15 +119,13 @@ public class TrackAspect {
                     bean.setEndTime(System.currentTimeMillis());
                     trackStorage.add(bean.buildJson());
                 } else {
-                    System.out.println("----------------------LOCAL对象为空------------------------------");
+                    logger.debug("----------------------LOCAL对象为空------------------------");
                 }
             } catch (Exception e) {
                 logger.warn("===============忽略3============", e);
             } finally {
-                if (isPortal) {
-                    isPortal = false;
-                    LOCAL.remove();
-                }
+                LOCAL.remove();
+                //TRACK_ID_LOCAL.remove();
             }
         }
         return retObject;
