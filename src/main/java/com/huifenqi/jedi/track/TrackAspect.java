@@ -58,21 +58,21 @@ public class TrackAspect {
                     logger.debug("Dubbo RPC Context is not work");
                 }
 
-                System.out.println("rpc:" + trackId);
+                logger.debug("rpc:" + trackId);
 
                 //从线程变量副本中获取
                 if (null == trackId || trackId.length() == 0) {
                     trackId = TRACK_ID_LOCAL.get();
                 }
 
-                System.out.println("thread:" + trackId);
+                logger.debug("thread:" + trackId);
 
                 //生成trackId
                 if (null == trackId || trackId.length() == 0) {
                     trackId = UUID.randomUUID().toString();
                 }
 
-                System.out.println("uuid:" + trackId);
+                logger.debug("uuid:" + trackId);
 
                 //dubbo上下文保存trackId
                 if (rpcContext != null) {
@@ -99,8 +99,6 @@ public class TrackAspect {
                 logger.warn("===============忽略1============", e);
             } finally {
                 retObject = pjp.proceed();
-
-                System.out.println("end:" + trackId);
             }
 
         } catch (Throwable t) {
@@ -137,7 +135,7 @@ public class TrackAspect {
 //
 //    @Before("track()")
 //    public void doBefore(JoinPoint joinPoint) {
-//        System.out.println("成功进入切面");
+//        logger.debug("成功进入切面");
 //        logger.debug("doBefore");
 //        startTime.set(System.currentTimeMillis());
 //
