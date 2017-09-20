@@ -8,6 +8,7 @@ import com.huifenqi.jedi.track.producer.TrackProducerManager;
 import com.huifenqi.jedi.track.producer.redis.RedisTrackProducer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,10 @@ public class TrackAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(
+            value = {"jedi.track.enabled"},
+            matchIfMissing = false
+    )
     public TrackProducerManager trackConsumerManager() {
         return new TrackProducerManager();
     }
